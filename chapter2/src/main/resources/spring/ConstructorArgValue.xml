@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="compactDisc"
+          class="stereo_xmlconfig.BlankDisc">
+        <constructor-arg value="Sgt. Pepper's Lonely Hearts Club Band" />
+        <constructor-arg value="The Beatles" />
+    </bean>
+    <bean id="compactDisc2" class="stereo_xmlconfig.BlankDisc" c:_0="Sgt. Pepper's Lonely Hearts Club Band" c:_1="The Beatles">
+    </bean>
+    <bean id="compactDisc3" class="stereo_xmlconfig.BlankDisc" c:artist="Sgt. Pepper's Lonely Hearts Club Band" c:title="The Beatles">
+    </bean>
+    <bean id="cdPlayer"
+          class="stereo_xmlconfig.CDPlayer">
+        <constructor-arg ref="compactDisc" />
+    </bean>
+
+</beans>

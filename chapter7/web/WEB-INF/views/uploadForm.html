@@ -12,8 +12,10 @@
 <div id="content">
     <h1>Welcome to Spitter</h1>
 
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="file"></input><br/>
+    <form action="fileupload/picture2" method="POST" enctype="multipart/form-data">
+        文本内容:<input type="text" name="tstring"/><br/>
+        文本内容2:<input type="text" name="tstring2"/><br/>
+        <input type="file" name="picture" accept="image/jpeg,image/png"></input><br/>
         <input type="submit"></input>
     </form>
 

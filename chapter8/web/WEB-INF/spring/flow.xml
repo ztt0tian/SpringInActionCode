@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:flow="http://www.springframework.org/schema/webflow-config"
+       xsi:schemaLocation="http://www.springframework.org/schema/webflow-config
+   http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.3.xsd
+   http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+   http://www.springframework.org/schema/context
+   http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    <context:component-scan base-package="com.springinaction.pizza.flow"/>
+    <flow:flow-executor id="flowExecutor"><!--创建一个流程执行器，负责创建和执行流程 并不负责加载流程定义-->
+    </flow:flow-executor>
+    <flow:flow-registry id="flowRegistry" base-path="/WEB-INF/flows"><!--流程注册表 负责加载流程定义 给 executor 使用-->
+        <!--在/WEB-INF/flows目录下查找流程定义 任何文件名以“-flow.xml”结尾的文件都将被视为流程定义-->
+        <flow:flow-location-pattern value="/**/*-flow.xml"></flow:flow-location-pattern>
+        <!--流程ID计算规则：流程定义文件i相对于基本路径将被用作流程ID 如/WEB-INF/flows/order/order-flow.xml 这样一个流程文件
+            对应的流程为 order -->
+    </flow:flow-registry>
+    <!--将流程请求发送给WebFlow（请求定向）-->
+    <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
+        <!--FlowHandlerMapping装配了流程注册表的引用 以此知道如何将请求的URL匹配到流程上
+            如有个ID为“pizza”的流程 就知道请求的URL模式（相对于应用程序上下文）是“/pizza”-->
+        <property name="flowRegistry" ref="flowRegistry"/>
+
+    </bean>
+    <!--响应请求 等同于Spring MVC的控制器 是DispatchServlet 与 SPring Web Flow的桥梁 装配了流程执行器的引用-->
+    <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter">
+        <property name="flowExecutor" ref="flowExecutor"/>
+    </bean>
+</beans>

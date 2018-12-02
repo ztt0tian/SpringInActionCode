@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
+    <!--最简单的形式 var元素 创建了一个新的Order实例并将其放在名为customer的变量中 这个变量可以在流程的任意状态进行访问-->
+    <var name="order" class="com.springinaction.pizza.domain.Order"></var>
+    <subflow-state id="customer" subflow="pizza/customer">
+        <input name="order" value="order"/>
+        <transition on="customerReady" to="order"/>
+        <!--customerReady后进入order子流程 即pizza/order-->
+    </subflow-state>
+    <!-- Order -->
+    <subflow-state id="order" subflow="pizza/order">
+        <!--input元素用于传递订单对象作为子流程的输入-->
+        <input name="order" value="order"/>
+        <!--如果子流程的end-date状态ID为orderCreated 则流程会转移到名为payment的状态-->
+        <transition on="orderCreated" to="payment"/><!--订单创建完后转到payment流程-->
+    </subflow-state>
+    <!--Payment-->
+    <subflow-state id="payment" subflow="pizza/payment">
+        <input name="order" value="order"/>
+        <transition on="paymentTaken" to="endState"/><!--恢复的位置 转到endState 即结束状态-->
+    </subflow-state>
+    <!--保存订单-->
+    <action-state id="saveOrder">
+        <!--一般会有<evaluate>子元素 给出行为状态要做的事 其中expression属性指定
+            进入这个状态时要评估的表达式 本例中是SpEL表达式 明会找到ID为pizzaFlowActions的bean并调用其saveOrder方法-->
+        <evaluate expression="pizzaFlowActions.saveOrder(order)"/>
+        <transition to="thankYou"/>
+    </action-state>
+    <view-state id="thankYou">
+        <transition to="endState"/>
+    </view-state>
+
+    <!-- End state -->
+    <end-state id="endState" />
+    <global-transitions>
+        <transition on="cancel" to="endState" />
+    </global-transitions>
+    <!--全局转移 流程中的所有状态都默认拥有这个cancel转移-->
+</flow>
